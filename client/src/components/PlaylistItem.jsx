@@ -3,8 +3,7 @@ import React from 'react'
 function PlaylistItem({playlist, onSelectPlaylist}) {
   return (
     <div>
-      <h3>{playlist.name}</h3>
-      <p onClick={onSelectPlaylist}>{playlist.id}</p>
+      <h3 onClick={() => { onSelectPlaylist(playlist) }}>{playlist.name}</h3>
     </div>
   )
 }
