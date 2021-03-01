@@ -1,38 +1,59 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 
 function GameBoard({tracks, playlist}) {
-  const [songs, setSongs] = useState([]);
+  const [songs] = useState(tracks[0]);
   const [fourTracks, setFourTracks] = useState([]);
+  const [points, setPoints] = useState(0);
+  const audio = useRef();
 
   useEffect(() => {
-    setSongs(tracks[0]);
+    shuffleTrakcs();
+  }, [tracks]);
 
-    if (songs.length)
-      shuffleTracks();
+  const shuffleTrakcs = useCallback(() => {
+    const fourArr = [];
 
-  }, [tracks, songs]);
+    for (let i = 0; i < 4; i++) {
+      let idx = Math.floor(Math.random() * songs.length);
+      if (fourArr.includes(songs[idx]))
+        console.log('includes');
+      else
+        fourArr.push(songs[idx]);
+    }
+    setFourTracks(fourArr);
+  }, [tracks]);
 
-  const shuffleTracks = () => {
-      const fourArr = [];
-      const newArr = songs;
+  useEffect(() => {
+    if (!fourTracks.length) return;
 
-      for (let i = 0; i < 4; i++) { 
-        let idx = Math.floor(Math.random() * (newArr.length - 0)) + 0;
+    let idx = Math.floor(Math.random() * fourTracks.length);
+    const url = fourTracks[idx].track.preview_url;
+    audio.current.src = url;
+    audio.current.volume = 0.2;
+    audio.current.play();
+  }, [fourTracks]);
 
-        console.log(songs[idx]);
-      }
+  const checkAnswer = (item) => {
+    const { track: { preview_url } } = item;
+    
+    if (preview_url === audio.current.src) {
+      setPoints(points + 1)
+    } else {
+      // setPoints(points - 1);
+    }
 
-      
+    shuffleTrakcs();
   };
+
 
   return (
     <div>
-      <h3>{ playlist.name }</h3>
-      { fourTracks.map((item) => <p key={item.track.id}>{ item.track.name }</p>) }
-      <button onClick={shuffleTracks}>shuffle again</button>
+      <h2>{ playlist.name } - { songs.length }</h2>
+      <h3>{ points } score</h3>
+      { fourTracks.map((item) => <p onClick={() => checkAnswer(item)} key={item.track.id}>{ item.track.name }</p>) }
+      <audio ref={audio}></audio>
     </div>
   )
 }
 
 export default GameBoard
-
