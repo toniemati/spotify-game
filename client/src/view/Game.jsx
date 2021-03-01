@@ -11,20 +11,17 @@ const SPOTIFY = new SpotifyWebApi({
 
 function Game({creds}) {
   const [spotify] = useState(SPOTIFY);
-  const [userId, setUserId] = useState();
+  const [user, setUser] = useState();
   const [playlists, setPlaylists] = useState();
   const [currentPlaylist, setCurrentPlaylist] = useState();
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
     spotify.setAccessToken(creds.access_token);
-    spotify.getMe().then(data => setUserId(data.body.id));
+    spotify.getMe().then(data => setUser(data.body));
+    spotify.getUserPlaylists(user).then(data => setPlaylists(data.body.items));
 
   }, [spotify, creds]);
-
-  const getMyPlaylist = () => {
-    spotify.getUserPlaylists(userId).then(data => setPlaylists(data.body.items));
-  };
 
   const setPlaylist = (playlist) => {
       setCurrentPlaylist(playlist);
@@ -46,10 +43,14 @@ function Game({creds}) {
 
   };
 
+  const resetPlaylist = () => {
+    setCurrentPlaylist();
+    setTracks([]);
+  };
+
   return (
     <div>
-      <h1>It's only game! 🎮</h1>
-      {!playlists && <button onClick={getMyPlaylist}>get my playlist</button>}
+      <h1 onClick={() => resetPlaylist()}>It's only game! 🎮</h1>
       {playlists && !currentPlaylist && <ListPlaylists onSetPlaylist={setPlaylist} playlists={playlists}/>}
       {currentPlaylist && tracks.length && <GameBoard playlist={currentPlaylist} tracks={tracks} />}
     </div>
