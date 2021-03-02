@@ -1,0 +1,26 @@
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: lightgray;
+}
+
+button {
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: #1DD05D;
+  color: #000;
+  
+  border: 1px solid black;
+  outline: none;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+}
+
+button:hover {
+  color:#1DD05D;
+  background-color: #333;
+  border: 2px solid #1DD05D;
+}

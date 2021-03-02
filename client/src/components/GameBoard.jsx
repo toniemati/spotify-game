@@ -5,9 +5,8 @@ function GameBoard({tracks, playlist}) {
   const [fourTracks, setFourTracks] = useState([]);
   const [points, setPoints] = useState(0);
   const [round, setRound] = useState(0);
-  const [time, setTime] = useState(10);
+  let timerOut = null;
   const audio = useRef();
-  let timerInterval = null;
 
   useEffect(() => {
     shuffleTrakcs();
@@ -24,10 +23,10 @@ function GameBoard({tracks, playlist}) {
         fourArr.push(songs[idx]);
     }
     setFourTracks(fourArr);
-  }, [tracks]);
+  });
 
   useEffect(() => {
-    if (!fourTracks.length) return;
+    if (fourTracks.length < 4) return;
 
     let idx = Math.floor(Math.random() * fourTracks.length);
 
@@ -38,24 +37,20 @@ function GameBoard({tracks, playlist}) {
   const playAudio = (url) => {
     audio.current.src = url;
     audio.current.volume = 0.1;
+    
+    clearingTimeOut();
+
+    timerOut = setTimeout(() => {
+      shuffleTrakcs();
+    }, 5000);
+
     audio.current.play();
 
-    if (timerInterval)
-      timerInterval = null;
-    
-    timerInterval = setInterval(() => {
-      if (time < 0) {
-        setTime(10);
-        clearInterval(timerInterval);
-        shuffleTrakcs();
-      }
-
-      setTime(time - 1);
-    }, 1000);
 
   };
 
   const checkAnswer = (item) => {
+    clearingTimeOut();
     const { track: { preview_url } } = item;
     
     if (preview_url === audio.current.src) 
@@ -63,6 +58,13 @@ function GameBoard({tracks, playlist}) {
     
     setRound(round + 1);
     shuffleTrakcs();
+  };
+
+  const clearingTimeOut = () => {
+    if (timerOut)
+      clearTimeout(timerOut);
+    
+    timerOut = null;
   };
 
 

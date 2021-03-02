@@ -1,11 +1,12 @@
 import React from 'react'
+import './HomePage.css';
 
 function HomePage() {
 
   return (
     <div className="home-page">
       <a href="http://localhost:8888/login">
-        <button>login with spotify</button>
+        <button>Login with Spotify</button>
       </a>
     </div>
   )

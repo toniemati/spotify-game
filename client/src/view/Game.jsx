@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
 import GameBoard from '../components/GameBoard';
 import ListPlaylists from '../components/ListPlaylists';
+import './Game.css';
 
 const SPOTIFY = new SpotifyWebApi({
   clientId: 'fcecfc72172e4cd267473117a17cbd4d',
@@ -49,7 +50,7 @@ function Game({creds}) {
   };
 
   return (
-    <div>
+    <div className="game">
       <h1 onClick={() => resetPlaylist()}>It's only game! 🎮</h1>
       {playlists && !currentPlaylist && <ListPlaylists onSetPlaylist={setPlaylist} playlists={playlists}/>}
       {currentPlaylist && tracks.length && <GameBoard playlist={currentPlaylist} tracks={tracks} />}
